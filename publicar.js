@@ -15,6 +15,40 @@ function log(msg) {
   console.log(msg);
 }
 
+function removerChamadasComerciais(texto) {
+  let blocos = texto.split(/\n\s*\n/);
+  const padroes = [
+    /disponibilidade\s+para\s+projetos/i,
+    /projetos?\s+freelance/i,
+    /consultoria\s+sob\s+demanda/i,
+    /chamar\s+(no|na|via)\s+(privado|dm)/i,
+    /minha\s+dm\s+est[aá]\s+aberta/i,
+    /mande\s+uma\s+dm/i,
+    /mande\s+uma\s+mensagem\s+direta/i,
+    /estou\s+com\s+disponibilidade/i,
+    /abrindo\s+agenda/i,
+    /nota\s+r[aá]pida/i,
+    /atendo\s+sob\s+demanda/i,
+    /para\s+projetos\s+pontuais/i
+  ];
+
+  const resultado = [];
+  for (const b of blocos) {
+    const limpo = b.trim();
+    if (/^[-—_*]{2,}$/.test(limpo)) continue;
+    if (padroes.some(p => p.test(limpo))) {
+      const tagsMatch = limpo.match(/(#[a-zA-Z0-9_]+(?:\s+#[a-zA-Z0-9_]+)*)$/);
+      if (tagsMatch) {
+        resultado.push(tagsMatch[1]);
+      }
+      continue;
+    }
+    resultado.push(limpo);
+  }
+
+  return resultado.join('\n\n');
+}
+
 function sanitizarParaLinkedIn(texto) {
   return texto.replace(/([\\|{}()\[\]*~_@])/g, '\\$1');
 }
@@ -74,7 +108,8 @@ async function publicar() {
   log(`Autor: ${userName} (${personUrn})`);
   log(`Tema do dia: "${proximoPost.tema}" (ID #${proximoPost.id})`);
 
-  const commentaryTratado = sanitizarParaLinkedIn(proximoPost.conteudo);
+  const conteudoLimpo = removerChamadasComerciais(proximoPost.conteudo);
+  const commentaryTratado = sanitizarParaLinkedIn(conteudoLimpo);
 
   const payload = {
     author: personUrn,

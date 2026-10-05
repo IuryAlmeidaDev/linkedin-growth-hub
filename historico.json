@@ -14,11 +14,23 @@
     "publicadoEm": "2026-10-01T18:14:11.761Z"
   },
   {
+    "postUrn": "urn:li:share:7511764663785840640",
+    "link": "https://www.linkedin.com/feed/update/urn:li:share:7511764663785840640",
+    "tipo": "Gerado dinamicamente via LLM local (agy)",
+    "publicadoEm": "2026-10-02T12:30:58.139Z"
+  },
+  {
     "postId": 3,
     "tema": "Queda no custo de inferência e a viabilidade dos Coding Agents 24/7",
     "postUrn": "urn:li:share:7511829013737148430",
     "link": "https://www.linkedin.com/feed/update/urn:li:share:7511829013737148430",
     "publicadoEm": "2026-10-02T16:46:40.321Z"
+  },
+  {
+    "postUrn": "urn:li:share:7512126940959514624",
+    "link": "https://www.linkedin.com/feed/update/urn:li:share:7512126940959514624",
+    "tipo": "Gerado dinamicamente via LLM local (agy)",
+    "publicadoEm": "2026-10-03T12:30:31.814Z"
   },
   {
     "postId": 4,
@@ -28,10 +40,22 @@
     "publicadoEm": "2026-10-03T15:12:01.752Z"
   },
   {
+    "postUrn": "urn:li:share:7512489346172608512",
+    "link": "https://www.linkedin.com/feed/update/urn:li:share:7512489346172608512",
+    "tipo": "Gerado dinamicamente via LLM local (agy)",
+    "publicadoEm": "2026-10-04T12:30:35.499Z"
+  },
+  {
     "postId": 5,
     "tema": "Autonomia e Arquitetura: Abrindo agenda para projetos de software sênior e freelance",
     "postUrn": "urn:li:share:7512541047755976704",
     "link": "https://www.linkedin.com/feed/update/urn:li:share:7512541047755976704",
     "publicadoEm": "2026-10-04T15:56:02.555Z"
+  },
+  {
+    "postUrn": "urn:li:share:7512851716636217344",
+    "link": "https://www.linkedin.com/feed/update/urn:li:share:7512851716636217344",
+    "tipo": "Gerado dinamicamente via LLM local (agy)",
+    "publicadoEm": "2026-10-05T12:30:31.620Z"
   }
 ]

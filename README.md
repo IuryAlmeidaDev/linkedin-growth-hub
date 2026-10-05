@@ -1,14 +1,14 @@
 # 🚀 LinkedIn Growth Hub & AutoPost
 
-Automação inteligente de conteúdo e networking no LinkedIn focada em atração de projetos freelance, consultoria técnica e autoridade em Inteligência Artificial.
+Automação inteligente de conteúdo e networking no LinkedIn focada em autoridade técnica em Engenharia de Software e Inteligência Artificial.
 
 ## 🌟 Funcionalidades
-1. **Publicador Diário na Nuvem (GitHub Actions):**
-   - Dispara todo dia às **08:30 BRT** (11:30 UTC).
-   - Analisa papers científicos (arXiv), novidades de IA (MCP, LLMs, DeepSeek, RAG, Agentes) e inclui links oficiais.
-   - Chamadas suaves para ação (CTA) para fechar projetos PJ/Freela.
-   - Histórico gravado em git para nunca repetir post.
-   - **Zero dependência de PC ligado.**
+1. **Publicador Inteligente a cada 2 dias (LLM Local - `agy`):**
+   - Dispara a cada **2 dias** às **08:30**.
+   - Analisa novidades reais de IA e papers científicos (arXiv, MCP, LLMs, DeepSeek, RAG, MoE, inferência, context caching).
+   - Foco 100% em autoridade técnica, lições práticas de engenharia e debate de qualidade (sem chamadas comerciais de autopromoção).
+   - Filtro automático pós-geração para garantir que nenhuma menção de freela/consultoria/DM seja publicada.
+   - Trava de intervalo mínimo de segurança (mínimo de 36h entre posts automáticos).
 
 2. **Radar de Freelas & Conexões (Web Dashboard):**
    - Filtros em tempo real de pessoas pedindo devs/freelas no LinkedIn.
@@ -17,5 +17,6 @@ Automação inteligente de conteúdo e networking no LinkedIn focada em atraçã
 
 ## 🛠️ Tecnologias
 - Node.js (API REST oficial do LinkedIn v202609)
-- GitHub Actions (Cron Scheduler 24/7)
+- Windows Task Scheduler (Intervalo de 2 em 2 dias às 08:30)
+- LLM Local (`agy`)
 - Vercel (Dashboard Web Responsivo)

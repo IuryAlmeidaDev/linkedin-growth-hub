@@ -33,18 +33,54 @@ function notifyWindows(title, message) {
   exec(`powershell -NoProfile -Command "${psScript.replace(/\n/g, ' ')}"`, () => {});
 }
 
+function removerChamadasComerciais(texto) {
+  let blocos = texto.split(/\n\s*\n/);
+  const padroes = [
+    /disponibilidade\s+para\s+projetos/i,
+    /projetos?\s+freelance/i,
+    /consultoria\s+sob\s+demanda/i,
+    /chamar\s+(no|na|via)\s+(privado|dm)/i,
+    /minha\s+dm\s+est[aá]\s+aberta/i,
+    /mande\s+uma\s+dm/i,
+    /mande\s+uma\s+mensagem\s+direta/i,
+    /estou\s+com\s+disponibilidade/i,
+    /abrindo\s+agenda/i,
+    /nota\s+r[aá]pida/i,
+    /atendo\s+sob\s+demanda/i,
+    /para\s+projetos\s+pontuais/i
+  ];
+
+  const resultado = [];
+  for (const b of blocos) {
+    const limpo = b.trim();
+    if (/^[-—_*]{2,}$/.test(limpo)) continue;
+    if (padroes.some(p => p.test(limpo))) {
+      // Se contiver hashtags no final do bloco removido, preserva as hashtags
+      const tagsMatch = limpo.match(/(#[a-zA-Z0-9_]+(?:\s+#[a-zA-Z0-9_]+)*)$/);
+      if (tagsMatch) {
+        resultado.push(tagsMatch[1]);
+      }
+      continue;
+    }
+    resultado.push(limpo);
+  }
+
+  return resultado.join('\n\n');
+}
+
 async function gerarConteudoComLLM() {
   log('🧠 Chamando a LLM local (agy) para pesquisar e redigir o post inédito do dia...');
 
-  const prompt = `Você é um engenheiro de software sênior e consultor de IA.
+  const prompt = `Você é um engenheiro de software sênior e especialista em IA.
 Escreva um post técnico inédito e aprofundado para o LinkedIn em português brasileiro.
 Diretrizes:
-- Escolha uma novidade real, paper recente do arXiv (ex: DeepSeek, Llama, Anthropic, OpenAI, Qwen, Transformers, RAG, MCP, MoE, inferência, context caching) ou mudança relevante em IA.
+- Escolha uma novidade real, paper recente do arXiv (ex: DeepSeek, Llama, Anthropic, OpenAI, Qwen, Transformers, RAG, MCP, MoE, inferência, context caching) ou mudança relevante em IA e arquitetura.
 - Comece com um gancho forte nas primeiras duas linhas.
 - Explique a arquitetura e a lição prática de engenharia (como isso resolve problemas reais de software/infraestrutura).
 - Inclua links oficiais reais (arXiv, GitHub ou documentação).
-- Finalize com uma pergunta para gerar debate técnico nos comentários.
-- Adicione uma chamada sutil (CTA) no final indicando que você tem disponibilidade para projetos freelance e consultoria sob demanda em IA e backend.
+- Finalize com uma pergunta instigante para gerar debate técnico genuíno nos comentários.
+- REGRA CRÍTICA DE ESTILO: NUNCA inclua frases de autopromoção, nem notas de disponibilidade para projetos freelance, consultoria sob demanda ou pedidos para chamar no privado/DM. O objetivo é 100% autoridade técnica pura e debate prático.
+- Use no máximo 3 a 5 hashtags técnicas relevantes no final.
 - Retorne APENAS o texto pronto do post, sem aspas e sem explicações antes ou depois.`;
 
   return new Promise((resolve, reject) => {
@@ -81,11 +117,32 @@ async function executar() {
     process.exit(1);
   }
 
+  const force = process.argv.includes('--force');
+  if (!force && fs.existsSync(HISTORICO_PATH)) {
+    try {
+      const historico = JSON.parse(fs.readFileSync(HISTORICO_PATH, 'utf-8'));
+      if (historico.length > 0) {
+        const ultimo = historico[historico.length - 1];
+        if (ultimo.publicadoEm) {
+          const diffMs = Date.now() - new Date(ultimo.publicadoEm).getTime();
+          const horasDesdeUltimo = diffMs / (1000 * 60 * 60);
+          if (horasDesdeUltimo < 36) {
+            log(`⏳ Intervalo mínimo de 2 dias não atingido. Último post foi há ${horasDesdeUltimo.toFixed(1)}h (${ultimo.publicadoEm}). Encerrando sem publicar. (Passe --force para forçar)`);
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      log(`⚠️ Aviso ao ler histórico: ${e.message}`);
+    }
+  }
+
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
 
   try {
-    const postTexto = await gerarConteudoComLLM();
-    log(`✅ Post gerado com sucesso pela LLM!\nPrévia:\n${postTexto.slice(0, 150)}...\n`);
+    let postTexto = await gerarConteudoComLLM();
+    postTexto = removerChamadasComerciais(postTexto);
+    log(`✅ Post gerado e limpo com sucesso pela LLM!\nPrévia:\n${postTexto.slice(0, 150)}...\n`);
 
     log(`Publicando no LinkedIn de ${config.userName}...`);
     const commentaryTratado = sanitizarParaLinkedIn(postTexto);

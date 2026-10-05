@@ -1,9 +1,10 @@
 name: LinkedIn AutoPost Diário
 
+# Cron desativado para evitar publicações concorrentes (o agendamento ativo agora é de 2 em 2 dias localmente)
+# on:
+#   schedule:
+#     - cron: '30 11 * * *'
 on:
-  schedule:
-    # 11:30 UTC = 08:30 BRT (Horário de Brasília) todos os dias
-    - cron: '30 11 * * *'
   workflow_dispatch: # Permite disparar manualmente a qualquer momento pelo GitHub
 
 jobs:
